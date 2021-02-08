@@ -52,6 +52,9 @@ return return KW_RETURN;
 true return LIT_TRUE;
 false return LIT_FALSE;
 
+"//".* /* Comentários de uma e múltiplas linhas */
+"/*"[^*]*[*]+([^*/][^*]*[*]+)*[/]
+
 [a-z|A-Z|_][a-z|A-Z|0-9|_]* return TK_IDENTIFIER;
 
 . return TOKEN_ERROR;
