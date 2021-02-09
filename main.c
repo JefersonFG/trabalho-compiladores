@@ -10,6 +10,7 @@ int main() {
     while (isRunning()) {
         token = yylex();
         printf("Token lido: %d\n", token);
+        printf("Linha atual: %d\n", getLineNumber());
     }
 
     return 0;

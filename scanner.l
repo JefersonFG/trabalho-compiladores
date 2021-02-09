@@ -1,9 +1,16 @@
 %{
 #include "tokens.h"
 int is_running = 1;
+int line_number = 1;
 %}
 
+%x COMMENT
+
 %%
+
+"\n" line_number++; /* Contagem de linhas */
+
+[ \t] /* Ignora whitespace */
 
 char return KW_CHAR; /* Palavras reservadas */
 int return KW_INT;
@@ -52,12 +59,15 @@ return return KW_RETURN;
 true return LIT_TRUE;
 false return LIT_FALSE;
 
-"//".* /* Comentários de uma e múltiplas linhas */
-"/*"[^*]*[*]+([^*/][^*]*[*]+)*[/]
-
 [a-z|A-Z|_][a-z|A-Z|0-9|_]* return TK_IDENTIFIER;
 
 . return TOKEN_ERROR;
+
+"//".* /* Comentários de uma linha */
+"/*" BEGIN(COMMENT); /* Comentários de várias linhas */
+<COMMENT>"*/" BEGIN(INITIAL);
+<COMMENT>"\n" line_number++;
+<COMMENT>.
 
 %%
 
@@ -66,6 +76,10 @@ int yywrap(void) {
     return 1;
 }
 
-int isRunning() {
+int isRunning(void) {
     return is_running;
+}
+
+int getLineNumber(void) {
+    return line_number;
 }
