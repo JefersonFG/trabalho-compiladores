@@ -1,5 +1,6 @@
 #include "hash.h"
 
+#include <stdio.h>
 #include <string.h>
 
 hash_table_t* create_hash_table(int size) {
@@ -114,9 +115,32 @@ int get_hash_token(hash_table_t* hash_table, char* value) {
 }
 
 void print_hash(hash_table_t* hash_table) {
-    //
+    int i = 0;
+    for (i = 0; i < hash_table->size; i++) {
+        hash_node_t* current_node = hash_table->table[i];
+
+        while (current_node) {
+            fprintf(stdout, "Node value: %s - token: %d", current_node->value, current_node->token);
+            current_node = current_node->next;
+        }
+    }
 }
 
 void free_hash(hash_table_t* hash_table) {
-    //
+    // Frees nodes
+    int i = 0;
+    for (i = 0; i < hash_table->size; i++) {
+        hash_node_t* current_node = hash_table->table[i];
+        hash_node_t* next_node = 0;
+
+        while (current_node) {
+            next_node = current_node->next;
+            free(current_node);
+            current_node = next_node;
+        }
+    }
+
+    // Frees table and hash
+    free(hash_table->table);
+    free(hash_table);
 }
