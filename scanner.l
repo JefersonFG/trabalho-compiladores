@@ -61,13 +61,13 @@ false return LIT_FALSE;
 
 [a-z|A-Z|_][a-z|A-Z|0-9|_]* return TK_IDENTIFIER;
 
-. return TOKEN_ERROR;
-
 "//".* /* Comentários de uma linha */
 "/*" BEGIN(COMMENT); /* Comentários de várias linhas */
 <COMMENT>"*/" BEGIN(INITIAL);
 <COMMENT>"\n" line_number++;
 <COMMENT>.
+
+. return TOKEN_ERROR;
 
 %%
 
