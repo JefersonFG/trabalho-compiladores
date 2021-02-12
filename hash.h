@@ -11,6 +11,9 @@ typedef struct hash_table_s {
     struct node_s **table;
 } hash_table_t;
 
+// Hash table to be used
+extern hash_table_t* global_hash_table;
+
 // Creates a hash table with the given size
 hash_table_t* create_hash_table(int size);
 

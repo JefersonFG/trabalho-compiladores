@@ -2,6 +2,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
+
+hash_table_t* global_hash_table = 0;
 
 hash_table_t* create_hash_table(int size) {
     if (size < 1)
@@ -46,7 +49,7 @@ int calculate_hash_index(hash_table_t* hash_table, char* value) {
     hash ^= hash >> 11;
     hash += hash << 15;
 
-    return hash % hash_table->size;
+    return abs(hash) % hash_table->size;
 }
 
 int insert_hash_value(hash_table_t* hash_table, char* value, int token) {
@@ -120,7 +123,7 @@ void print_hash(hash_table_t* hash_table) {
         hash_node_t* current_node = hash_table->table[i];
 
         while (current_node) {
-            fprintf(stdout, "Node value: %s - token: %d", current_node->value, current_node->token);
+            fprintf(stdout, "Node value: %s - token: %d\n", current_node->value, current_node->token);
             current_node = current_node->next;
         }
     }
