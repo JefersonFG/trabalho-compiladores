@@ -4,6 +4,7 @@
 #include "y.tab.h"
 
 extern FILE *yyin;
+extern int yydebug;
 
 int main(int argc, char* argv[]) {
     // Check that the program was called with an input file parameter
@@ -14,6 +15,9 @@ int main(int argc, char* argv[]) {
         fprintf(stderr, "Error: parser called with too many parameters, use the format etapa2 filename\n");
         return 1;
     }
+
+    // TODO: Remove this, for debug only
+    yydebug = 1;
 
     // Open the input file
     yyin = fopen(argv[1], "r");

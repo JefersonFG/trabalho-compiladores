@@ -15,10 +15,11 @@ int line_number = 1;
 
 [ \t] /* Ignora whitespace */
 
-char return KW_CHAR; /* Palavras reservadas */
+bool return KW_BOOL; /* Palavras reservadas */
+byte return KW_BYTE;
 int return KW_INT;
-bool return KW_BOOL;
-pointer return KW_POINTER;
+long return KW_LONG;
+float return KW_FLOAT;
 
 if return KW_IF; /* Palavras reservadas */
 then return KW_THEN;
@@ -57,10 +58,11 @@ return return KW_RETURN;
 "->" return RIGHT_ASSIGN;
 
 [0-9]+ {insert_hash_value(global_hash_table, yytext, LIT_INTEGER); return LIT_INTEGER;} /* Literais */
-'\\?.' {insert_hash_value(global_hash_table, yytext, LIT_CHAR); return LIT_CHAR;}
+[0-9]+.[0-9]+ {insert_hash_value(global_hash_table, yytext, LIT_FLOAT); return LIT_FLOAT;}
+'\\?.' {insert_hash_value(global_hash_table, yytext, LIT_BYTE); return LIT_BYTE;}
 \"(\\.|[^"\\])*\" {insert_hash_value(global_hash_table, yytext, LIT_STRING); return LIT_STRING;}
-true return LIT_TRUE;
-false return LIT_FALSE;
+true|TRUE return LIT_TRUE;
+false|FALSE return LIT_FALSE;
 
 [a-z|A-Z|_][a-z|A-Z|0-9|_]* {insert_hash_value(global_hash_table, yytext, TK_IDENTIFIER); return TK_IDENTIFIER;}
 

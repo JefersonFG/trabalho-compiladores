@@ -1,10 +1,9 @@
 ## Project ignores
 
 .vscode
-*.yy.c
-*.yy.h
+*.yy.*
 etapa*
-y.tab.c
+*.tab.*
 
 ## Auto generated c ignores
 
