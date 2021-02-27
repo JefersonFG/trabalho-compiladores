@@ -1,5 +1,5 @@
 %{
-#include "tokens.h"
+#include "y.tab.h"
 #include "hash.h"
 
 int is_running = 1;
@@ -75,7 +75,7 @@ false return LIT_FALSE;
 %%
 
 void initMe(void) {
-    int hash_size = 20;
+    int hash_size = 1000;
     global_hash_table = create_hash_table(hash_size);
 }
 
