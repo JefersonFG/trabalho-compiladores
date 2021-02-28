@@ -11,8 +11,8 @@ int mat [ 10];
 
 int main ()
   {
-  a = 5;
-  v1[a] = 55;
+  a : 5;
+  v1[a] : 55;
   print v1[55];
 
   print "Digite um numero: \n";
@@ -20,8 +20,8 @@ int main ()
 
   while (i<10)
     {
-    i = incn(i,1);
-    a = incn(a,1);
+    i : incn(i,1);
+    a : incn(a,1);
     };
 
   print "Incrementado algumas vezes a fica " a "\n";

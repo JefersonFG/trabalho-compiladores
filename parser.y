@@ -44,11 +44,11 @@
 %%
 
 program:
-    declarations
+    declaration_list
     ;
 
-declarations:
-    declaration declarations
+declaration_list:
+    declaration declaration_list
     |
     ;
 
@@ -56,6 +56,7 @@ declaration:
     type TK_IDENTIFIER ':' literal ';'
     | type TK_IDENTIFIER '[' LIT_INTEGER ']' ';'
     | type TK_IDENTIFIER '[' LIT_INTEGER ']' ':' vector_initial_values ';'
+    | type TK_IDENTIFIER '(' function_parameters ')' command_block
     ;
 
 type:
@@ -79,6 +80,52 @@ literal:
 vector_initial_values:
     literal vector_initial_values
     |
+    ;
+
+function_parameters:
+    type TK_IDENTIFIER function_parameters
+    ',' type TK_IDENTIFIER function_parameters
+    |
+    ;
+
+command_block:
+    '{' command_list '}'
+    ;
+
+command_list:
+    command ';' command_list
+    |
+    ;
+
+command:
+    TK_IDENTIFIER ':' expression
+    | TK_IDENTIFIER '[' expression ']' ':' expression
+    | KW_READ TK_IDENTIFIER
+    | KW_PRINT print_list
+    | KW_RETURN expression
+    | flux_control
+    | command_block
+    |
+    ;
+
+expression:
+    TK_IDENTIFIER
+    | TK_IDENTIFIER '[' expression ']'
+    | literal
+    ;
+
+print_list:
+    LIT_STRING print_list_recursive
+    | expression print_list_recursive
+    ;
+
+print_list_recursive:
+    LIT_STRING print_list_recursive
+    | expression print_list_recursive
+    |
+    ;
+
+flux_control:
     ;
 
 %%
