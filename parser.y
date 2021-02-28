@@ -36,7 +36,10 @@
 
 %token TOKEN_ERROR
 
-/* Adicionar regras de precedência de operadores */
+%left '|' '&' 
+%left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_DIF 
+%left '+' '-'  
+%left '*' '/'
 
 %%
 
@@ -51,6 +54,8 @@ declarations:
 
 declaration:
     type TK_IDENTIFIER ':' literal ';'
+    | type TK_IDENTIFIER '[' LIT_INTEGER ']' ';'
+    | type TK_IDENTIFIER '[' LIT_INTEGER ']' ':' vector_initial_values ';'
     ;
 
 type:
@@ -69,7 +74,11 @@ literal:
     | LIT_TRUE
     | LIT_FALSE
     | LIT_BYTE
-    | LIT_STRING
+    ;
+
+vector_initial_values:
+    literal vector_initial_values
+    |
     ;
 
 %%
