@@ -56,7 +56,7 @@ declaration:
     type TK_IDENTIFIER ':' literal ';'
     | type TK_IDENTIFIER '[' LIT_INTEGER ']' ';'
     | type TK_IDENTIFIER '[' LIT_INTEGER ']' ':' vector_initial_values ';'
-    | type TK_IDENTIFIER '(' function_parameters ')' command_block
+    | type TK_IDENTIFIER '(' function_definition_parameters ')' command_block
     ;
 
 type:
@@ -82,9 +82,13 @@ vector_initial_values:
     |
     ;
 
-function_parameters:
-    type TK_IDENTIFIER function_parameters
-    ',' type TK_IDENTIFIER function_parameters
+function_definition_parameters:
+    type TK_IDENTIFIER function_definition_parameters_recursive
+    |
+    ;
+
+function_definition_parameters_recursive:
+    ',' type TK_IDENTIFIER function_definition_parameters_recursive
     |
     ;
 
@@ -112,6 +116,21 @@ expression:
     TK_IDENTIFIER
     | TK_IDENTIFIER '[' expression ']'
     | literal
+    | expression '+' expression
+    | expression '-' expression
+    | expression '*' expression
+    | expression '/' expression
+    | expression '<' expression
+    | expression '>' expression
+    | expression '|' expression
+    | expression '&' expression
+    | expression OPERATOR_LE expression
+    | expression OPERATOR_GE expression
+    | expression OPERATOR_EQ expression
+    | expression OPERATOR_DIF expression
+    | '~' expression
+    | '(' expression ')'
+    | TK_IDENTIFIER '(' function_call_parameters ')'
     ;
 
 print_list:
@@ -122,6 +141,16 @@ print_list:
 print_list_recursive:
     LIT_STRING print_list_recursive
     | expression print_list_recursive
+    |
+    ;
+
+function_call_parameters:
+    expression function_call_parameters_recursive
+    |
+    ;
+
+function_call_parameters_recursive:
+    ',' expression function_call_parameters_recursive
     |
     ;
 
