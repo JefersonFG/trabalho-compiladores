@@ -16,9 +16,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // TODO: Remove this, for debug only
-    yydebug = 1;
-
     // Open the input file
     yyin = fopen(argv[1], "r");
     if (yyin == 0) {
@@ -33,5 +30,7 @@ int main(int argc, char* argv[]) {
     // Show the final state of the hash table and free it before finishing without errors
     print_hash(global_hash_table);
     free_hash(global_hash_table);
+
+    fprintf(stdout, "Input file %s parsed successfully\n", argv[1]);
     return 0;
 }

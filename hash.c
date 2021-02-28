@@ -118,6 +118,7 @@ int get_hash_token(hash_table_t* hash_table, char* value) {
 }
 
 void print_hash(hash_table_t* hash_table) {
+    fprintf(stdout, "Hash current state:\n");
     int i = 0;
     for (i = 0; i < hash_table->size; i++) {
         hash_node_t* current_node = hash_table->table[i];

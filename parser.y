@@ -2,7 +2,6 @@
     #include <stdio.h>
     #include <stdlib.h>
     int yyerror();
-    #define YYDEBUG 1
 %}
 
 %token KW_BOOL
@@ -15,6 +14,8 @@
 %token KW_THEN
 %token KW_ELSE
 %token KW_WHILE
+%token KW_FOR
+%token KW_BREAK
 %token KW_READ
 %token KW_PRINT
 %token KW_RETURN
@@ -36,10 +37,14 @@
 
 %token TOKEN_ERROR
 
+%nonassoc IFX
+%nonassoc KW_ELSE
+
 %left '|' '&' 
 %left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_DIF 
 %left '+' '-'  
 %left '*' '/'
+%nonassoc UMINUS
 
 %%
 
@@ -69,9 +74,9 @@ type:
 
 literal:
     LIT_INTEGER
-    | '-' LIT_INTEGER
+    | '-' LIT_INTEGER %prec UMINUS
     | LIT_FLOAT
-    | '-' LIT_FLOAT
+    | '-' LIT_FLOAT %prec UMINUS
     | LIT_TRUE
     | LIT_FALSE
     | LIT_BYTE
@@ -124,6 +129,7 @@ expression:
     | expression '>' expression
     | expression '|' expression
     | expression '&' expression
+    | expression 'v' expression
     | expression OPERATOR_LE expression
     | expression OPERATOR_GE expression
     | expression OPERATOR_EQ expression
@@ -155,6 +161,11 @@ function_call_parameters_recursive:
     ;
 
 flux_control:
+    KW_IF '(' expression ')' KW_THEN command %prec IFX
+    | KW_IF '(' expression ')' KW_THEN command KW_ELSE command
+    | KW_WHILE '(' expression ')' command
+    | KW_FOR '(' TK_IDENTIFIER ':' expression ',' expression ',' expression ')' command
+    | KW_BREAK
     ;
 
 %%
