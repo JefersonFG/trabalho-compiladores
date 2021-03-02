@@ -14,6 +14,7 @@ int main ()
   v[a] <- 55;
   print v[55];
   2 -> i;
+  v[12] -> c;
 
   print "Digite um numero: \n";
   read a;
@@ -38,6 +39,11 @@ int main ()
     }
   else
     print "OK!\n";
+  
+  if (a >= 10) then
+    print "a maior do que 10, valor ", a, "\n"
+  else
+    print "a nao maior do que 10";
   };
 
 int incn (int x , int n )

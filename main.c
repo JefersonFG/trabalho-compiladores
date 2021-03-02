@@ -4,7 +4,6 @@
 #include "y.tab.h"
 
 extern FILE *yyin;
-extern int yydebug;
 
 int main(int argc, char* argv[]) {
     // Check that the program was called with an input file parameter
