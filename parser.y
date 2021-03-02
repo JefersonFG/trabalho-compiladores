@@ -5,17 +5,14 @@
 %}
 
 %token KW_BOOL
-%token KW_BYTE
+%token KW_CHAR
 %token KW_INT
-%token KW_LONG
-%token KW_FLOAT
+%token KW_POINTER
 
 %token KW_IF
 %token KW_THEN
 %token KW_ELSE
 %token KW_WHILE
-%token KW_FOR
-%token KW_BREAK
 %token KW_READ
 %token KW_PRINT
 %token KW_RETURN
@@ -29,10 +26,9 @@
 %token TK_IDENTIFIER
 
 %token LIT_INTEGER
-%token LIT_FLOAT
 %token LIT_TRUE
 %token LIT_FALSE
-%token LIT_BYTE
+%token LIT_CHAR
 %token LIT_STRING
 
 %token TOKEN_ERROR
@@ -59,27 +55,24 @@ declaration_list:
 
 declaration:
     type TK_IDENTIFIER ':' literal ';'
-    | type TK_IDENTIFIER '[' LIT_INTEGER ']' ';'
-    | type TK_IDENTIFIER '[' LIT_INTEGER ']' ':' vector_initial_values ';'
-    | type TK_IDENTIFIER '(' function_definition_parameters ')' command_block
+    | type '[' LIT_INTEGER ']' TK_IDENTIFIER ';'
+    | type '[' LIT_INTEGER ']' TK_IDENTIFIER ':' vector_initial_values ';'
+    | type TK_IDENTIFIER '(' function_definition_parameters ')' command_block ';'
     ;
 
 type:
     KW_BOOL
-    | KW_BYTE
+    | KW_CHAR
     | KW_INT
-    | KW_LONG
-    | KW_FLOAT
+    | KW_POINTER
     ;
 
 literal:
     LIT_INTEGER
     | '-' LIT_INTEGER %prec UMINUS
-    | LIT_FLOAT
-    | '-' LIT_FLOAT %prec UMINUS
     | LIT_TRUE
     | LIT_FALSE
-    | LIT_BYTE
+    | LIT_CHAR
     ;
 
 vector_initial_values:
@@ -107,8 +100,10 @@ command_list:
     ;
 
 command:
-    TK_IDENTIFIER ':' expression
-    | TK_IDENTIFIER '[' expression ']' ':' expression
+    TK_IDENTIFIER LEFT_ASSIGN expression
+    | expression RIGHT_ASSIGN TK_IDENTIFIER
+    | TK_IDENTIFIER '[' expression ']' LEFT_ASSIGN expression
+    | expression RIGHT_ASSIGN TK_IDENTIFIER '[' expression ']'
     | KW_READ TK_IDENTIFIER
     | KW_PRINT print_list
     | KW_RETURN expression
@@ -129,12 +124,13 @@ expression:
     | expression '>' expression
     | expression '|' expression
     | expression '&' expression
-    | expression 'v' expression
     | expression OPERATOR_LE expression
     | expression OPERATOR_GE expression
     | expression OPERATOR_EQ expression
     | expression OPERATOR_DIF expression
     | '~' expression
+    | '$' expression
+    | '#' expression
     | '(' expression ')'
     | TK_IDENTIFIER '(' function_call_parameters ')'
     ;
@@ -145,8 +141,8 @@ print_list:
     ;
 
 print_list_recursive:
-    LIT_STRING print_list_recursive
-    | expression print_list_recursive
+    ',' LIT_STRING print_list_recursive
+    | ',' expression print_list_recursive
     |
     ;
 
@@ -164,8 +160,6 @@ flux_control:
     KW_IF '(' expression ')' KW_THEN command %prec IFX
     | KW_IF '(' expression ')' KW_THEN command KW_ELSE command
     | KW_WHILE '(' expression ')' command
-    | KW_FOR '(' TK_IDENTIFIER ':' expression ',' expression ',' expression ')' command
-    | KW_BREAK
     ;
 
 %%
