@@ -4,6 +4,7 @@
 *.yy.*
 etapa*
 *.tab.*
+y.output
 
 ## Auto generated c ignores
 

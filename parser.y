@@ -33,14 +33,11 @@
 
 %token TOKEN_ERROR
 
-%nonassoc IFX
-%nonassoc KW_ELSE
-
 %left '|' '&' 
 %left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_DIF 
 %left '+' '-'  
 %left '*' '/'
-%nonassoc UMINUS
+%left '~' '$' '#'
 
 %%
 
@@ -69,7 +66,7 @@ type:
 
 literal:
     LIT_INTEGER
-    | '-' LIT_INTEGER %prec UMINUS
+    | '-' LIT_INTEGER
     | LIT_TRUE
     | LIT_FALSE
     | LIT_CHAR
@@ -157,7 +154,7 @@ function_call_parameters_recursive:
     ;
 
 flux_control:
-    KW_IF '(' expression ')' KW_THEN command %prec IFX
+    KW_IF '(' expression ')' KW_THEN command
     | KW_IF '(' expression ')' KW_THEN command KW_ELSE command
     | KW_WHILE '(' expression ')' command
     ;
