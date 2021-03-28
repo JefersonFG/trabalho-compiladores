@@ -1,5 +1,7 @@
 #include <stdlib.h>
 
+#pragma once
+
 typedef struct node_s {
     char* value;
     int token;
