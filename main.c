@@ -5,6 +5,7 @@
 
 extern FILE *yyin;
 
+void initMe(void);
 void decompile_ast(ast_node_t* root, FILE* output_file);
 
 int main(int argc, char* argv[]) {
@@ -43,7 +44,7 @@ int main(int argc, char* argv[]) {
     print_hash(global_hash_table);
     free_hash(global_hash_table);
 
-    fprintf(stdout, "Compilation successful\n", argv[1]);
+    fprintf(stdout, "Compilation successful\n");
     return 0;
 }
 

@@ -66,6 +66,7 @@
 #define AST_VECTOR 47
 #define AST_PARENTHESIS 48
 #define AST_FUNCTION_CALL 49
+#define AST_VECTOR_SIZE 50
 
 typedef struct ast_node_s {
     int type;

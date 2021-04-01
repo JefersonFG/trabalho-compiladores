@@ -6,6 +6,7 @@
     #include "hash.h"
 
     int yyerror();
+    int getLineNumber(void);
 %}
 
 %union
@@ -80,8 +81,8 @@ declaration_list:
 
 declaration:
     type TK_IDENTIFIER ':' literal ';' { $$ = create_ast_node(AST_VARIABLE_DECLARATION, $2, $1, $4, 0, 0); }
-    | type '[' LIT_INTEGER ']' TK_IDENTIFIER ';' { $$ = create_ast_node(AST_VECTOR_DECLARATION, $5, $1, $3, 0, 0); }
-    | type '[' LIT_INTEGER ']' TK_IDENTIFIER ':' vector_initial_values ';' { $$ = create_ast_node(AST_VECTOR_INIT_DECLARATION, $5, $1, $3, $7, 0); }
+    | type '[' LIT_INTEGER ']' TK_IDENTIFIER ';' { $$ = create_ast_node(AST_VECTOR_DECLARATION, $5, $1, create_ast_node(AST_VECTOR_SIZE, $3, 0, 0, 0, 0), 0, 0); }
+    | type '[' LIT_INTEGER ']' TK_IDENTIFIER ':' vector_initial_values ';' { $$ = create_ast_node(AST_VECTOR_INIT_DECLARATION, $5, $1, create_ast_node(AST_VECTOR_SIZE, $3, 0, 0, 0, 0), $7, 0); }
     | type TK_IDENTIFIER '(' function_definition_parameters ')' command_block ';' { $$ = create_ast_node(AST_FUNCTION_DECLARATION, $2, $1, $4, $6, 0); }
     ;
 
@@ -161,12 +162,12 @@ expression:
     ;
 
 print_list:
-    LIT_STRING print_list_recursive { $$ = create_ast_node(AST_PRINT_LIST, 0, $1, $2, 0, 0); }
+    LIT_STRING print_list_recursive { $$ = create_ast_node(AST_PRINT_LIST, 0, create_ast_node(AST_SYMBOL, $1, 0, 0, 0, 0), $2, 0, 0); }
     | expression print_list_recursive { $$ = create_ast_node(AST_PRINT_LIST, 0, $1, $2, 0, 0); }
     ;
 
 print_list_recursive:
-    ',' LIT_STRING print_list_recursive { $$ = create_ast_node(AST_PRINT_LIST_RECURSIVE, 0, $2, $3, 0, 0); }
+    ',' LIT_STRING print_list_recursive { $$ = create_ast_node(AST_PRINT_LIST_RECURSIVE, 0, create_ast_node(AST_SYMBOL, $2, 0, 0, 0, 0), $3, 0, 0); }
     | ',' expression print_list_recursive { $$ = create_ast_node(AST_PRINT_LIST_RECURSIVE, 0, $2, $3, 0, 0); }
     | { $$ = 0; }
     ;
