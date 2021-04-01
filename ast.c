@@ -2,6 +2,8 @@
 
 ast_node_t* global_ast_node = 0;
 
+void print_ast_tree_recursive(ast_node_t* node, int level);
+
 ast_node_t* create_ast_node(int type, hash_node_t* symbol, ast_node_t* son0, ast_node_t* son1, ast_node_t* son2, ast_node_t* son3) {
     ast_node_t* new_node = malloc(sizeof(ast_node_t));
     if (!new_node)
@@ -15,6 +17,15 @@ ast_node_t* create_ast_node(int type, hash_node_t* symbol, ast_node_t* son0, ast
     new_node->sons[3] = son3;
 
     return new_node;
+}
+
+void print_ast_tree(ast_node_t* root) {
+    if (!root) {
+        fprintf(stderr, "Empty root node\n");
+        return;
+    }
+
+    print_ast_tree_recursive(root, 0);
 }
 
 void print_ast_tree_recursive(ast_node_t* node, int level) {
@@ -184,13 +195,4 @@ void print_ast_tree_recursive(ast_node_t* node, int level) {
 
     for (i = 0; i < NUM_SONS; i++)
         print_ast_tree_recursive(node->sons[i], level + 1);
-}
-
-void print_ast_tree(ast_node_t* root) {
-    if (!root) {
-        fprintf(stderr, "Empty root node\n");
-        return;
-    }
-
-    print_ast_tree_recursive(root, 0);
 }

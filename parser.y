@@ -3,13 +3,14 @@
     #include <stdlib.h>
 
     #include "ast.h"
+    #include "hash.h"
 
     int yyerror();
 %}
 
 %union
 {
-    hash_note_t* symbol;
+    hash_node_t* symbol;
     ast_node_t* ast_node;
 }
 
@@ -49,6 +50,7 @@
 %type<ast_node> function_definition_parameters;
 %type<ast_node> function_definition_parameters_recursive;
 %type<ast_node> command_block;
+%type<ast_node> command_list;
 %type<ast_node> command;
 %type<ast_node> expression;
 %type<ast_node> print_list;

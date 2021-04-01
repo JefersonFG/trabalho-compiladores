@@ -1,6 +1,8 @@
 %{
-#include "y.tab.h"
+
+#include "ast.h"
 #include "hash.h"
+#include "y.tab.h"
 
 int is_running = 1;
 int line_number = 1;
