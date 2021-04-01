@@ -52,17 +52,17 @@ return return KW_RETURN;
 "<=" return OPERATOR_LE; /* Operadores compostos */
 ">=" return OPERATOR_GE;
 "==" return OPERATOR_EQ;
-"!=" return OPERATOR_DIF;
+"!=" return OPERATOR_NE;
 "<-" return LEFT_ASSIGN;
 "->" return RIGHT_ASSIGN;
 
-[0-9]+ {insert_hash_value(global_hash_table, yytext, LIT_INTEGER); return LIT_INTEGER;} /* Literais */
-'\\?.' {insert_hash_value(global_hash_table, yytext, LIT_CHAR); return LIT_CHAR;}
-\"(\\.|[^"\\])*\" {insert_hash_value(global_hash_table, yytext, LIT_STRING); return LIT_STRING;}
+[0-9]+ {yylval.symbol = insert_hash_value(global_hash_table, yytext, LIT_INTEGER); return LIT_INTEGER;} /* Literais */
+'\\?.' {yylval.symbol = insert_hash_value(global_hash_table, yytext, LIT_CHAR); return LIT_CHAR;}
+\"(\\.|[^"\\])*\" {yylval.symbol = insert_hash_value(global_hash_table, yytext, LIT_STRING); return LIT_STRING;}
 true return LIT_TRUE;
 false return LIT_FALSE;
 
-[a-z|A-Z|_][a-z|A-Z|0-9|_]* {insert_hash_value(global_hash_table, yytext, TK_IDENTIFIER); return TK_IDENTIFIER;}
+[a-z|A-Z|_][a-z|A-Z|0-9|_]* {yylval.symbol = insert_hash_value(global_hash_table, yytext, TK_IDENTIFIER); return TK_IDENTIFIER;}
 
 "//".* /* Comentários de uma linha */
 "/*" BEGIN(COMMENT); /* Comentários de várias linhas */

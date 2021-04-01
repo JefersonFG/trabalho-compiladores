@@ -22,8 +22,8 @@ hash_table_t* create_hash_table(int size);
 // Calculates the hash address for a given value on the hash table
 int calculate_hash_index(hash_table_t* hash_table, char* value);
 
-// Inserts a pair value-token on the hash table, indicates if was successful
-int insert_hash_value(hash_table_t* hash_table, char* value, int token);
+// Inserts a pair value-token on the hash table, returns the hash node
+hash_node_t* insert_hash_value(hash_table_t* hash_table, char* value, int token);
 
 // Gets the token associated to the value
 int get_hash_token(hash_table_t* hash_table, char* value);

@@ -52,7 +52,7 @@ int calculate_hash_index(hash_table_t* hash_table, char* value) {
     return abs(hash) % hash_table->size;
 }
 
-int insert_hash_value(hash_table_t* hash_table, char* value, int token) {
+hash_node_t* insert_hash_value(hash_table_t* hash_table, char* value, int token) {
     int hash_index = calculate_hash_index(hash_table, value);
 
     hash_node_t* current_node = hash_table->table[hash_index];
@@ -68,7 +68,7 @@ int insert_hash_value(hash_table_t* hash_table, char* value, int token) {
     if (current_node != 0 && strcmp(current_node->value, value) == 0) {
         // Ideally here we would change the value associated with the key
         // But in this case there is nothing to do as the pair will never change
-        return 1;
+        return current_node;
     } else {
         // Allocate a new node
         hash_node_t* new_node = malloc(sizeof(hash_node_t));
@@ -95,7 +95,7 @@ int insert_hash_value(hash_table_t* hash_table, char* value, int token) {
             previous_node->next = new_node;
         }
 
-        return 1;
+        return new_node;
     }
 }
 
