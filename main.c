@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 
     // Open the output file
     FILE* output_file;
-    output_file = fopen(argv[1], "w");
+    output_file = fopen(argv[2], "w");
     if (output_file == 0) {
         fprintf(stderr, "Error opening output file: %s\n", argv[1]);
         return 2;
