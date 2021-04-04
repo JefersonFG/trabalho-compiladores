@@ -246,7 +246,7 @@ void decompile_ast(ast_node_t* node, FILE* output_file) {
             // ->int x<-, int n
             if (node->sons[0]) {
                 decompile_ast(node->sons[0], output_file);
-                fprintf(output_file, "%s", node->symbol->value);
+                fprintf(output_file, " %s", node->symbol->value);
             }
             break;
         case AST_FUNCTION_DEFINITION_PARAMETERS_RECURSIVE:
