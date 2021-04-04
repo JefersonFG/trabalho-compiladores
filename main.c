@@ -96,17 +96,15 @@ void decompile_ast(ast_node_t* node, FILE* output_file) {
         
         // Language commands
         case AST_READ:
-            fprintf(output_file, "read %s;\n", node->symbol->value);
+            fprintf(output_file, "read %s", node->symbol->value);
             break;
         case AST_PRINT:
             fprintf(output_file, "print ");
             decompile_ast(node->sons[0], output_file);
-            fprintf(output_file, ";\n");
             break;
         case AST_RETURN:
             fprintf(output_file, "return ");
             decompile_ast(node->sons[0], output_file);
-            fprintf(output_file, ";\n");
             break;
         
         // Expressions
@@ -230,9 +228,12 @@ void decompile_ast(ast_node_t* node, FILE* output_file) {
             decompile_ast(node->sons[0], output_file);
             fprintf(output_file, " %s (", node->symbol->value);
             decompile_ast(node->sons[1], output_file);
-            fprintf(output_file, ") ");
+            fprintf(output_file, ")\n");
             decompile_ast(node->sons[2], output_file);
+            fprintf(output_file, ";\n");
             break;
+        
+        // Parameters
         case AST_VECTOR_INITIAL_VALUES:
             // 0 0 0 0 0
             decompile_ast(node->sons[0], output_file);
@@ -256,17 +257,22 @@ void decompile_ast(ast_node_t* node, FILE* output_file) {
                 fprintf(output_file, "%s", node->symbol->value);
             }
             break;
+        
+        // Commands
         case AST_COMMAND_BLOCK:
             // { command_list }
             fprintf(output_file, "{\n");
             decompile_ast(node->sons[0], output_file);
-            fprintf(output_file, "};\n");
+            fprintf(output_file, "}");
             break;
         case AST_COMMAND_LIST:
-            // command command_list
+            // command; command_list
             decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, ";\n");
             decompile_ast(node->sons[1], output_file);
             break;
+        
+        // Parameters
         case AST_PRINT_LIST:
             // string print_list_recursive
             decompile_ast(node->sons[0], output_file);
@@ -295,6 +301,8 @@ void decompile_ast(ast_node_t* node, FILE* output_file) {
                 decompile_ast(node->sons[1], output_file);
             }
             break;
+        
+        // Assignments
         case AST_ASSIGNMENT:
             // identifier <- expression
             fprintf(output_file, "%s <- ", node->symbol->value);
@@ -319,6 +327,8 @@ void decompile_ast(ast_node_t* node, FILE* output_file) {
             decompile_ast(node->sons[1], output_file);
             fprintf(output_file, "]");
             break;
+        
+        // Expressions
         case AST_VECTOR:
             // identifier[expression]
             fprintf(output_file, "%s[", node->symbol->value);
@@ -337,5 +347,11 @@ void decompile_ast(ast_node_t* node, FILE* output_file) {
             decompile_ast(node->sons[0], output_file);
             fprintf(output_file, ")");
             break;
+        case AST_VECTOR_SIZE:
+            // integer literal
+            fprintf(output_file, "%s", node->symbol->value);
+            break;
+        default:
+            fprintf(stderr, "Unrecognized literal on AST\n");
     }
 }

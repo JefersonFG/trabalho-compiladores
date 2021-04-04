@@ -8,6 +8,9 @@ int i :  0;
 int[10] v : 0 0 0 0 0 0 0 0 0 0; 
 int [ 10] mat ; 
 
+pointer ptr: 0;
+bool flag: true;
+
 int main () 
   {
   a <- 5;
