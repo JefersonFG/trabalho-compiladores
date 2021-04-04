@@ -75,20 +75,27 @@ void decompile_ast(ast_node_t* node, FILE* output_file) {
         // Loop controls
         case AST_IF:
             fprintf(output_file, "if (");
+            decompile_ast(node->sons[0], output_file);
             fprintf(output_file, ") then\n");
             fprintf(output_file, "    ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_IF_ELSE:
             fprintf(output_file, "if (");
+            decompile_ast(node->sons[0], output_file);
             fprintf(output_file, ") then\n");
             fprintf(output_file, "    ");
+            decompile_ast(node->sons[1], output_file);
             fprintf(output_file, "else\n");
             fprintf(output_file, "    ");
+            decompile_ast(node->sons[2], output_file);
             break;
         case AST_WHILE:
             fprintf(output_file, "while (");
+            decompile_ast(node->sons[0], output_file);
             fprintf(output_file, ")\n");
             fprintf(output_file, "    ");
+            decompile_ast(node->sons[1], output_file);
             break;
         
         // Language commands
@@ -97,123 +104,239 @@ void decompile_ast(ast_node_t* node, FILE* output_file) {
             break;
         case AST_PRINT:
             fprintf(output_file, "print ");
+            decompile_ast(node->sons[0], output_file);
             break;
         case AST_RETURN:
             fprintf(output_file, "return ");
+            decompile_ast(node->sons[0], output_file);
             break;
+        
+        // Expressions
         case AST_ADD:
-            fprintf(stdout, "AST_ADD");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " + ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_SUB:
-            fprintf(stdout, "AST_SUB");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " - ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_MULT:
-            fprintf(stdout, "AST_MULT");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " * ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_DIV:
-            fprintf(stdout, "AST_DIV");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " / ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_LESSER:
-            fprintf(stdout, "AST_LESSER");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " < ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_GREATER:
-            fprintf(stdout, "AST_GREATER");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " > ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_OR:
-            fprintf(stdout, "AST_OR");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " | ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_AND:
-            fprintf(stdout, "AST_AND");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " & ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_LESSER_EQUAL:
-            fprintf(stdout, "AST_LESSER_EQUAL");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " <= ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_GREATER_EQUAL:
-            fprintf(stdout, "AST_GREATER_EQUAL");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " >= ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_EQUAL:
-            fprintf(stdout, "AST_EQUAL");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " == ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_NOT_EQUAL:
-            fprintf(stdout, "AST_NOT_EQUAL");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " != ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_NOT:
-            fprintf(stdout, "AST_NOT");
+            fprintf(output_file, " ~");
+            decompile_ast(node->sons[0], output_file);
             break;
         case AST_LEFT_ASSIGN:
-            fprintf(stdout, "AST_LEFT_ASSIGN");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " <- ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_RIGHT_ASSIGN:
-            fprintf(stdout, "AST_RIGHT_ASSIGN");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " -> ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_ADDRESS:
-            fprintf(stdout, "AST_ADDRESS");
+            fprintf(output_file, " $");
+            decompile_ast(node->sons[0], output_file);
             break;
         case AST_DEREFERENCE:
-            fprintf(stdout, "AST_DEREFERENCE");
+            fprintf(output_file, " #");
+            decompile_ast(node->sons[0], output_file);
             break;
+        
+        // Declarations
         case AST_DECLARATION_LIST:
-            fprintf(stdout, "AST_DECLARATION_LIST");
+            decompile_ast(node->sons[0], output_file);
+            if (node->sons[1]) {
+                fprintf(output_file, '\n');
+                decompile_ast(node->sons[1], output_file);
+            }
             break;
         case AST_VARIABLE_DECLARATION:
-            fprintf(stdout, "AST_VARIABLE_DECLARATION");
+            // bool b : false;
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " %s : ", node->symbol->value);
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_VECTOR_DECLARATION:
-            fprintf(stdout, "AST_VECTOR_DECLARATION");
+            // int[10] mat;
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, "[");
+            decompile_ast(node->sons[1], output_file);
+            fprintf(output_file, "] %s", node->symbol->value);
             break;
         case AST_VECTOR_INIT_DECLARATION:
-            fprintf(stdout, "AST_VECTOR_INIT_DECLARATION");
+            // int[10] v : 0 0 0 0 0 0 0 0 0 0;
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, "[");
+            decompile_ast(node->sons[1], output_file);
+            fprintf(output_file, "] %s : ", node->symbol->value);
+            decompile_ast(node->sons[2], output_file);
             break;
         case AST_FUNCTION_DECLARATION:
-            fprintf(stdout, "AST_FUNCTION_DECLARATION");
+            // int incn (int x , int n ) { return x+n; };
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " %s (", node->symbol->value);
+            decompile_ast(node->sons[1], output_file);
+            fprintf(output_file, ") ");
+            decompile_ast(node->sons[2], output_file);
             break;
         case AST_VECTOR_INITIAL_VALUES:
-            fprintf(stdout, "AST_VECTOR_INITIAL_VALUES");
+            // 0 0 0 0 0
+            decompile_ast(node->sons[0], output_file);
+            if (node->sons[1]) {
+                fprintf(output_file, " ");
+                decompile_ast(node->sons[1], output_file);
+            }
             break;
         case AST_FUNCTION_DEFINITION_PARAMETERS:
-            fprintf(stdout, "AST_FUNCTION_DEFINITION_PARAMETERS");
+            // ->int x<-, int n
+            if (node->sons[0]) {
+                decompile_ast(node->sons[0], output_file);
+                fprintf(output_file, "%s", node->symbol->value);
+            }
             break;
         case AST_FUNCTION_DEFINITION_PARAMETERS_RECURSIVE:
-            fprintf(stdout, "AST_FUNCTION_DEFINITION_PARAMETERS_RECURSIVE");
+            // int x ->, int n<-
+            if (node->sons[0]) {
+                fprintf(output_file, ", ");
+                decompile_ast(node->sons[0], output_file);
+                fprintf(output_file, "%s", node->symbol->value);
+            }
             break;
         case AST_COMMAND_BLOCK:
-            fprintf(stdout, "AST_COMMAND_BLOCK");
+            // { command_list }
+            fprintf(output_file, "{\n    ");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, "\n}");
             break;
         case AST_COMMAND_LIST:
-            fprintf(stdout, "AST_COMMAND_LIST");
+            // command command_list
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, "\n");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_PRINT_LIST:
-            fprintf(stdout, "AST_PRINT_LIST");
+            // string print_list_recursive
+            decompile_ast(node->sons[0], output_file);
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_PRINT_LIST_RECURSIVE:
-            fprintf(stdout, "AST_PRINT_LIST_RECURSIVE");
+            // , string|expression print_list_recursive
+            if (node->sons[0]) {
+                fprintf(output_file, ", ");
+                decompile_ast(node->sons[0], output_file);
+                decompile_ast(node->sons[1], output_file);
+            }
             break;
         case AST_FUNCTION_CALL_PARAMETERS:
-            fprintf(stdout, "AST_FUNCTION_CALL_PARAMETERS");
+            // expression function_call_parameters_recursive
+            if (node->sons[0]) {
+                decompile_ast(node->sons[0], output_file);
+                decompile_ast(node->sons[1], output_file);
+            }
             break;
         case AST_FUNCTION_CALL_PARAMETERS_RECURSIVE:
-            fprintf(stdout, "AST_FUNCTION_CALL_PARAMETERS_RECURSIVE");
+            // , expression function_call_parameters_recursive
+            if (node->sons[0]) {
+                fprintf(output_file, ", ");
+                decompile_ast(node->sons[0], output_file);
+                decompile_ast(node->sons[1], output_file);
+            }
             break;
         case AST_ASSIGNMENT:
-            fprintf(stdout, "AST_ASSIGNMENT");
+            // identifier <- expression
+            fprintf(output_file, "%s <- ", node->symbol->value);
+            decompile_ast(node->sons[0], output_file);
             break;
         case AST_REVERSE_ASSIGNMENT:
-            fprintf(stdout, "AST_REVERSE_ASSIGNMENT");
+            // expression -> identifier
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " -> %s", node->symbol->value);
             break;
         case AST_VECTOR_ASSIGNMENT:
-            fprintf(stdout, "AST_VECTOR_ASSIGNMENT");
+            // identifier[expression] <- expression
+            fprintf(output_file, "%s[", node->symbol->value);
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, "] <- ");
+            decompile_ast(node->sons[1], output_file);
             break;
         case AST_REVERSE_VECTOR_ASSIGNMENT:
-            fprintf(stdout, "AST_REVERSE_VECTOR_ASSIGNMENT");
+            // expression -> identifier[expression]
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, " -> %s", node->symbol->value);
+            decompile_ast(node->sons[1], output_file);
+            fprintf(output_file, "]");
             break;
         case AST_VECTOR:
-            fprintf(stdout, "AST_VECTOR");
+            // identifier[expression]
+            fprintf(output_file, "%s[", node->symbol->value);
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, "]");
             break;
         case AST_PARENTHESIS:
-            fprintf(stdout, "AST_PARENTHESIS");
+            // (expression)
+            fprintf(output_file, "(");
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, ")");
             break;
         case AST_FUNCTION_CALL:
-            fprintf(stdout, "AST_FUNCTION_CALL");
+            // identifier(expression)
+            fprintf(output_file, "%s(", node->symbol->value);
+            decompile_ast(node->sons[0], output_file);
+            fprintf(output_file, ")");
             break;
     }
+    fprintf(output_file, ";\n");
 }
