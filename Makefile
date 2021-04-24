@@ -1,5 +1,5 @@
-etapa3: hash.o ast.o y.tab.o lex.yy.o main.o
-	gcc -Wall -Wextra -O3 -o etapa3 hash.o ast.o y.tab.o lex.yy.o main.o
+etapa4: hash.o ast.o semantics.o y.tab.o lex.yy.o main.o
+	gcc -Wall -Wextra -O3 -o etapa4 hash.o ast.o semantics.o y.tab.o lex.yy.o main.o
 
 main.o: main.c
 	gcc -Wall -Wextra -O3 -c main.c
@@ -9,6 +9,9 @@ hash.o: hash.c
 
 ast.o: ast.c
 	gcc -Wall -Wextra -O3 -c ast.c
+
+semantics.o: semantics.c
+	gcc -Wall -Wextra -O3 -c semantics.c
 
 y.tab.o : y.tab.c
 	gcc -Wall -Wextra -O3 -c y.tab.c
@@ -23,4 +26,4 @@ lex.yy.c: scanner.l
 	lex --header-file=lex.yy.h scanner.l
 
 clean:
-	rm *.o lex.yy.c y.tab.c etapa3
+	rm *.o lex.yy.c y.tab.c etapa4
