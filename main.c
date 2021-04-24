@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "ast.h"
+#include "semantics.h"
 #include "y.tab.h"
 
 extern FILE *yyin;
@@ -25,20 +26,16 @@ int main(int argc, char* argv[]) {
         return 2;
     }
 
-    // Open the output file
-    FILE* output_file;
-    output_file = fopen(argv[2], "w");
-    if (output_file == 0) {
-        fprintf(stderr, "Error opening output file: %s\n", argv[1]);
-        return 2;
-    }
-
     // Initialize the hash table and parse the input file
     initMe();
     yyparse();
 
-    // Decompile the generated AST into the output file
-    decompile_ast(global_ast_node, output_file);
+    // Check for semantic errors
+    if (global_semantic_error_list != 0) {
+        print_semantic_error_list(global_semantic_error_list);
+        free_semantic_error_list(global_semantic_error_list);
+        return 4;
+    }
 
     // Show the final state of the hash table and free it before finishing without errors
     print_hash(global_hash_table);
