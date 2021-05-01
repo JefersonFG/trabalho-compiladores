@@ -5,6 +5,7 @@
 typedef struct node_s {
     char* value;
     int token;
+    int declared;
     struct node_s* next;
 } hash_node_t;
 

@@ -80,6 +80,7 @@ hash_node_t* insert_hash_value(hash_table_t* hash_table, char* value, int token)
             return 0;
 
         new_node->token = token;
+        new_node->declared = 0;
         new_node->next = 0;
 
         if (current_node == hash_table->table[hash_index]) {

@@ -11,11 +11,11 @@ void decompile_ast(ast_node_t* node, FILE* output_file);
 
 int main(int argc, char* argv[]) {
     // Check that the program was called with input and output file parameters
-    if (argc < 3) {
-        fprintf(stderr, "Error: parser called without input and output file parameters, use the format etapa3 inputfile outputfile\n");
+    if (argc < 2) {
+        fprintf(stderr, "Error: parser called without input file parameter, use the format etapa4 inputfile\n");
         return 1;
-    } else if (argc > 3) {
-        fprintf(stderr, "Error: parser called with too many parameters, use the format etapa3 inputfile outputfile\n");
+    } else if (argc > 2) {
+        fprintf(stderr, "Error: parser called with too many parameters, use the format etapa4 inputfile\n");
         return 1;
     }
 
