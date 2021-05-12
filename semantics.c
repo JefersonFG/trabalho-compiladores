@@ -20,6 +20,9 @@ void check_and_mark_declaration(ast_node_t* node);
 // Checks that a variable declaration has compatibility between variable type and initializer type
 void check_variable_initialization(ast_node_t* node);
 
+// Checks that the vector initialization values have the right type and are in the right quantity
+void check_vector_initialization(ast_node_t* node);
+
 // Converts between the ast values used for types and our own internal type constants
 internal_type convert_ast_type_to_internal_type(int ast_type);
 
@@ -36,13 +39,22 @@ void verify_declarations(ast_node_t* node)
 
     switch (node->type) {
         case AST_VARIABLE_DECLARATION:
+        case AST_VECTOR_DECLARATION:
             // Checks for redeclaration
             check_and_mark_declaration(node);
+
             // Checks for initializer type compatibility
             check_variable_initialization(node);
             break;
-        case AST_VECTOR_DECLARATION:
+        case AST_VECTOR_INIT_DECLARATION:
+            // Checks for redeclaration
+            check_and_mark_declaration(node);
+
+            // Checks for initializer values type and quantity
+            check_vector_initialization(node);
+            break;
         case AST_FUNCTION_DECLARATION:
+            // Checks for redeclaration
             check_and_mark_declaration(node);
             break;
     }
@@ -84,6 +96,39 @@ void check_variable_initialization(ast_node_t* node)
         char* initializer_type_string = type_to_string(initializer_type);
         sprintf(error_message, "variable \'%s\' of type \'%s\' is initialized with incompatible value \'%s\' of type \'%s\'",
             node->symbol->value, declared_type_string, node->sons[1]->symbol->value, initializer_type_string);
+        add_semantic_error(error_message);
+    }
+}
+
+void check_vector_initialization(ast_node_t* node)
+{
+    // If no initializer is given finish
+    if (!node->sons[1])
+        return;
+
+    printf("# Checking variable %s\n", node->symbol->value);
+
+    // Parse initializer
+    ast_node_t* initializer_node = node->sons[1];
+    int parameter_quantity = atoi(initializer_node->symbol->value);
+
+    printf("## Expects %d parameters\n", parameter_quantity);
+
+    // Checks number of parameters
+    int parameter_count = 0;
+    ast_node_t* parameters = node->sons[2];
+
+    while (parameters) {
+        parameter_count++;
+        parameters = parameters->sons[1];
+    }
+
+    printf("## Got %d parameters\n", parameter_count);
+
+    if (parameter_count != parameter_quantity) {
+        char* error_message = get_error_message_buffer();
+        sprintf(error_message, "variable \'%s\' expected %d parameters but got %d on initialization",
+            node->symbol->value, parameter_quantity, parameter_count);
         add_semantic_error(error_message);
     }
 }
