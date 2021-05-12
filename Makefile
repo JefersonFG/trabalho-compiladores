@@ -1,5 +1,5 @@
-etapa4: hash.o ast.o semantics.o y.tab.o lex.yy.o main.o
-	gcc -Wall -Wextra -O3 -o etapa4 hash.o ast.o semantics.o y.tab.o lex.yy.o main.o
+etapa4: hash.o ast.o types.o semantics.o y.tab.o lex.yy.o main.o
+	gcc -Wall -Wextra -O3 -o etapa4 hash.o ast.o types.o semantics.o y.tab.o lex.yy.o main.o
 
 main.o: main.c
 	gcc -Wall -Wextra -O3 -c main.c
@@ -9,6 +9,9 @@ hash.o: hash.c
 
 ast.o: ast.c
 	gcc -Wall -Wextra -O3 -c ast.c
+
+types.o: types.c
+	gcc -Wall -Wextra -O3 -c types.c
 
 semantics.o: semantics.c
 	gcc -Wall -Wextra -O3 -c semantics.c
