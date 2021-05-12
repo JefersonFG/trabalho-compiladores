@@ -5,28 +5,21 @@
 semantic_error_node_t* global_semantic_error_list = 0;
 
 // Adds an error to the list of semantic errors
-void add_semantic_error(char* error_message)
-{
-    semantic_error_node_t* new_error = malloc(sizeof(semantic_error_node_t));
-    new_error->error_message = strdup(error_message);
-    new_error->next_error = 0;
-
-    if (!global_semantic_error_list) {
-        global_semantic_error_list = new_error;
-    } else {
-        semantic_error_node_t* last_error = global_semantic_error_list;
-        while (last_error->next_error)
-            last_error = last_error->next_error;
-        last_error->next_error = new_error;
-    }
-}
+void add_semantic_error(char* error_message);
 
 // Creates an error message buffer with a default size
-char* get_error_message_buffer()
+char* get_error_message_buffer();
+
+// Declaration check functions
+
+// Traverses de ast looking for variables that were already declared
+void check_redeclared_variables(ast_node_t* node);
+
+// Verify declarations
+
+void verify_declarations(ast_node_t* node)
 {
-    const int BUFFER_SIZE = 1024;
-    char *buffer = (char*) malloc(BUFFER_SIZE * sizeof(char));
-    return buffer;
+    check_redeclared_variables(node);
 }
 
 void check_redeclared_variables(ast_node_t* node)
@@ -53,6 +46,29 @@ void check_redeclared_variables(ast_node_t* node)
     int i = 0;
     for (i = 0; i < NUM_SONS; i++)
         check_redeclared_variables(node->sons[i]);
+}
+
+void add_semantic_error(char* error_message)
+{
+    semantic_error_node_t* new_error = malloc(sizeof(semantic_error_node_t));
+    new_error->error_message = strdup(error_message);
+    new_error->next_error = 0;
+
+    if (!global_semantic_error_list) {
+        global_semantic_error_list = new_error;
+    } else {
+        semantic_error_node_t* last_error = global_semantic_error_list;
+        while (last_error->next_error)
+            last_error = last_error->next_error;
+        last_error->next_error = new_error;
+    }
+}
+
+char* get_error_message_buffer()
+{
+    const int BUFFER_SIZE = 1024;
+    char *buffer = (char*) malloc(BUFFER_SIZE * sizeof(char));
+    return buffer;
 }
 
 void print_semantic_error_list(semantic_error_node_t* semantic_error_list)

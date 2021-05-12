@@ -75,7 +75,7 @@ program:
     declaration_list {
         $$ = $1;
         print_ast_tree($1);
-        check_redeclared_variables($1);
+        verify_declarations($1);
         global_ast_node = $$;
         }
     ;
