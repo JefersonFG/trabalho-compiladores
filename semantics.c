@@ -47,7 +47,7 @@ void verify_declarations(ast_node_t* node)
                     char* error_message = get_error_message_buffer();
                     char* declared_type_string = type_to_string(declared_type);
                     char* initializer_type_string = type_to_string(initializer_type);
-                    sprintf(error_message, "variable %s of type %s is initialized with incompatible value %s of type %s",
+                    sprintf(error_message, "variable \'%s\' of type \'%s\' is initialized with incompatible value \'%s\' of type \'%s\'",
                         node->symbol->value, declared_type_string, node->sons[1]->symbol->value, initializer_type_string);
                     add_semantic_error(error_message);
                 }
