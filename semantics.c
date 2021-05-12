@@ -17,6 +17,9 @@ char* get_error_message_buffer();
 // Checks if the current variable has been redeclared, if not declared marks as declared
 void check_and_mark_declaration(ast_node_t* node);
 
+// Checks that a variable declaration has compatibility between variable type and initializer type
+void check_variable_initialization(ast_node_t* node);
+
 // Converts between the ast values used for types and our own internal type constants
 internal_type convert_ast_type_to_internal_type(int ast_type);
 
@@ -35,23 +38,8 @@ void verify_declarations(ast_node_t* node)
         case AST_VARIABLE_DECLARATION:
             // Checks for redeclaration
             check_and_mark_declaration(node);
-
-            // Converts ast type into internal types
-            internal_type declared_type = convert_ast_type_to_internal_type(node->sons[0]->type);
-
-            // Checks that type of the initializer is compatible with the variable type
-            if (node->sons[1]) {
-                // Here converts from type tokens into internal type
-                internal_type initializer_type = convert_token_to_internal_type(node->sons[1]->symbol->token);
-                if (!are_types_compatible(declared_type, initializer_type)) {
-                    char* error_message = get_error_message_buffer();
-                    char* declared_type_string = type_to_string(declared_type);
-                    char* initializer_type_string = type_to_string(initializer_type);
-                    sprintf(error_message, "variable \'%s\' of type \'%s\' is initialized with incompatible value \'%s\' of type \'%s\'",
-                        node->symbol->value, declared_type_string, node->sons[1]->symbol->value, initializer_type_string);
-                    add_semantic_error(error_message);
-                }
-            }
+            // Checks for initializer type compatibility
+            check_variable_initialization(node);
             break;
         case AST_VECTOR_DECLARATION:
         case AST_FUNCTION_DECLARATION:
@@ -74,6 +62,29 @@ void check_and_mark_declaration(ast_node_t* node)
     } else {
         // Mark variable as declared
         node->symbol->declared = 1;
+    }
+}
+
+void check_variable_initialization(ast_node_t* node)
+{
+    // If no initializer is given finish
+    if (!node->sons[1])
+        return;
+
+    // Converts ast type into internal types
+    internal_type declared_type = convert_ast_type_to_internal_type(node->sons[0]->type);
+
+    // Here converts from type tokens into internal type
+    internal_type initializer_type = convert_token_to_internal_type(node->sons[1]->symbol->token);
+
+    // Checks that both types are compatible
+    if (!are_types_compatible(declared_type, initializer_type)) {
+        char* error_message = get_error_message_buffer();
+        char* declared_type_string = type_to_string(declared_type);
+        char* initializer_type_string = type_to_string(initializer_type);
+        sprintf(error_message, "variable \'%s\' of type \'%s\' is initialized with incompatible value \'%s\' of type \'%s\'",
+            node->symbol->value, declared_type_string, node->sons[1]->symbol->value, initializer_type_string);
+        add_semantic_error(error_message);
     }
 }
 
