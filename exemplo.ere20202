@@ -11,14 +11,6 @@ int [ 10] mat ;
 pointer ptr: 0;
 bool flag: true;
 
-// TODO: Remove, testing only
-// Too few values
-int[5] too_little: 1 2 3;
-// Too many values
-int[5] too_much: 1 2 3 4 5 6;
-// Wrong type
-bool[5] characters: 'a' 'b' 'c' 'd' 'e';
-
 int main () 
   {
   a <- 5;

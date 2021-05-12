@@ -106,13 +106,9 @@ void check_vector_initialization(ast_node_t* node)
     if (!node->sons[1])
         return;
 
-    printf("# Checking variable %s\n", node->symbol->value);
-
     // Parse initializer
     ast_node_t* initializer_node = node->sons[1];
     int parameter_quantity = atoi(initializer_node->symbol->value);
-
-    printf("## Expects %d parameters\n", parameter_quantity);
 
     // Checks number of parameters
     int parameter_count = 0;
@@ -120,10 +116,22 @@ void check_vector_initialization(ast_node_t* node)
 
     while (parameters) {
         parameter_count++;
+
+        // Check compatibility of types
+        internal_type declared_type = convert_ast_type_to_internal_type(node->sons[0]->type);
+        internal_type initializer_type = convert_token_to_internal_type(parameters->sons[0]->symbol->token);
+
+        if (!are_types_compatible(declared_type, initializer_type)) {
+            char* error_message = get_error_message_buffer();
+            char* declared_type_string = type_to_string(declared_type);
+            char* initializer_type_string = type_to_string(initializer_type);
+            sprintf(error_message, "variable \'%s\' of type \'%s\' is initialized with incompatible value \'%s\' of type \'%s\'",
+                node->symbol->value, declared_type_string, parameters->sons[0]->symbol->value, initializer_type_string);
+            add_semantic_error(error_message);
+        }
+
         parameters = parameters->sons[1];
     }
-
-    printf("## Got %d parameters\n", parameter_count);
 
     if (parameter_count != parameter_quantity) {
         char* error_message = get_error_message_buffer();
