@@ -12,17 +12,12 @@ char* get_error_message_buffer();
 
 // Declaration check functions
 
-// Traverses de ast looking for variables that were already declared
-void check_redeclared_variables(ast_node_t* node);
+// Checks if the current variable has been redeclared, if not declared marks as declared
+void check_and_mark_declaration(ast_node_t* node);
 
 // Verify declarations
 
 void verify_declarations(ast_node_t* node)
-{
-    check_redeclared_variables(node);
-}
-
-void check_redeclared_variables(ast_node_t* node)
 {
     if (!node)
         return;
@@ -31,21 +26,25 @@ void check_redeclared_variables(ast_node_t* node)
         case AST_VARIABLE_DECLARATION:
         case AST_VECTOR_DECLARATION:
         case AST_FUNCTION_DECLARATION:
-            if (node->symbol->declared) {
-                // Already marked as declared
-                char* error_message = get_error_message_buffer();
-                sprintf(error_message, "variable %s already declared", node->symbol->value);
-                add_semantic_error(error_message);
-            } else {
-                // Mark variable as declared
-                node->symbol->declared = 1;
-            }
-            break;
+            check_and_mark_declaration(node);
     }
 
     int i = 0;
     for (i = 0; i < NUM_SONS; i++)
-        check_redeclared_variables(node->sons[i]);
+        verify_declarations(node->sons[i]);
+}
+
+void check_and_mark_declaration(ast_node_t* node)
+{
+    if (node->symbol->declared) {
+        // Already marked as declared
+        char* error_message = get_error_message_buffer();
+        sprintf(error_message, "variable %s already declared", node->symbol->value);
+        add_semantic_error(error_message);
+    } else {
+        // Mark variable as declared
+        node->symbol->declared = 1;
+    }
 }
 
 void add_semantic_error(char* error_message)
